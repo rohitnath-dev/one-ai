@@ -1,58 +1,96 @@
 from app import call_ai
-import os
+
+from rich.console import Console
+from rich.markdown import Markdown
+from rich.panel import Panel
+from rich.table import Table
 
 
-AVAILABLE_COMMANDS = ["/help", "/clear", "/exit"]
+console = Console()
+
+
+AVAILABLE_COMMANDS = {
+    "/help": "Show available commands",
+    "/clear": "Clear the terminal",
+    "/exit": "Exit ONE",
+}
 
 
 def get_response(user_input):
-    response = call_ai(user_input)
-    return response
+    return call_ai(user_input)
 
 
-print("""
-────────────────────────────────────
-              ONE
-────────────────────────────────────
+def show_intro():
+    console.print(
+        Panel(
+            "[bold cyan]ONE[/bold cyan]\n"
+            "[dim]Think less. Ask more.[/dim]\n\n"
+            "Type anything to talk to AI.\n"
+            "Type [bold]/help[/bold] for available commands.",
+            border_style="cyan",
+            padding=(1, 3),
+        )
+    )
 
-THINK LESS. ASK MORE.
 
-Type anything to talk to AI.
-Type /help for available commands..
-""")
+def show_help():
+    table = Table(
+        title="[bold cyan]ONE COMMANDS[/bold cyan]",
+        border_style="dim",
+        show_header=True,
+    )
+
+    table.add_column("Command", style="bold cyan")
+    table.add_column("Description")
+
+    for command, description in AVAILABLE_COMMANDS.items():
+        table.add_row(command, description)
+
+    console.print(table)
+
+    console.print(
+        "\n[dim]Type anything to talk to AI.[/dim]"
+    )
+
+
+show_intro()
 
 
 while True:
-    user_input = input("ONE › ")
-    input_parts = user_input.split()
+    user_input = console.input(
+        "\n[bold cyan]ONE[/bold cyan] [dim]›[/dim] "
+    ).strip()
+
+    if not user_input:
+        continue
 
     if user_input.startswith("/"):
-        command_name = input_parts[0]
+        command = user_input.split()[0]
 
-        if command_name in AVAILABLE_COMMANDS:
+        if command not in AVAILABLE_COMMANDS:
+            console.print(
+                "[red]Unknown command.[/red] Try [bold]/help[/bold]."
+            )
+            continue
 
-            if command_name == "/exit":
-                print("Goodbye.")
-                break
+        if command == "/help":
+            show_help()
 
-            elif command_name == "/help":
-                print("""
-ONE COMMANDS
+        elif command == "/clear":
+            console.clear()
+            show_intro()
 
-/help     Show available commands
-/clear    Clear the terminal
-/exit     Exit ONE
-
-Type anything to talk to AI.
-""")
-
-            elif command_name == "/clear":
-                os.system("clear")
-
-        else:
-            print("Unknown command. Try /help.")
+        elif command == "/exit":
+            console.print("[dim]Goodbye.[/dim]")
+            break
 
     else:
-        print()
-        print(get_response(user_input))
-        print()
+        response = get_response(user_input)
+
+        console.print(
+            Panel(
+                Markdown(response),
+                border_style="dim",
+                padding=(0, 1),
+            )
+        )
