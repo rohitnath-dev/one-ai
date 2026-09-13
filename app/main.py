@@ -1,4 +1,5 @@
-from app import call_ai
+from app.ai import call_ai, should_search, generate_search_query
+from app.web_search import search_web
 
 from rich.console import Console
 from rich.markdown import Markdown
@@ -17,7 +18,17 @@ AVAILABLE_COMMANDS = {
 
 
 def get_response(user_input):
-    return call_ai(user_input)
+    if should_search(user_input):
+        with console.status("[cyan]Searching the web...[/cyan]", spinner="dots"):
+            search_query = generate_search_query(user_input)
+            search_results = search_web(search_query)
+
+        if search_results:
+            with console.status("[cyan]Generating response...[/cyan]", spinner="dots"):
+                return call_ai(user_input, context=search_results)
+
+    with console.status("[cyan]Generating response...[/cyan]", spinner="dots"):
+        return call_ai(user_input)
 
 
 def show_intro():
