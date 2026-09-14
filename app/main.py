@@ -18,16 +18,18 @@ AVAILABLE_COMMANDS = {
 
 
 def get_response(user_input):
-    if should_search(user_input):
-        with console.status("[cyan]Searching the web...[/cyan]", spinner="dots"):
+    with console.status("[cyan]Thinking...[/cyan]", spinner="dots") as status:
+
+        if should_search(user_input):
+            status.update("[cyan]Searching the web...[/cyan]")
             search_query = generate_search_query(user_input)
             search_results = search_web(search_query)
 
-        if search_results:
-            with console.status("[cyan]Generating response...[/cyan]", spinner="dots"):
+            if search_results:
+                status.update("[cyan]Generating response...[/cyan]")
                 return call_ai(user_input, context=search_results)
 
-    with console.status("[cyan]Generating response...[/cyan]", spinner="dots"):
+        status.update("[cyan]Generating response...[/cyan]")
         return call_ai(user_input)
 
 
