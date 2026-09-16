@@ -3,7 +3,7 @@ import json
 import time
 
 from app.prompts import SYSTEM_PROMPT, SEARCH_DECISION_PROMPT, SEARCH_QUERY_PROMPT
-from app.config import LLM_API_KEY
+from app.config import LLM_API_KEY, LLM_MODEL, LLM_BASE_URL
 
 
 def call_ai(query, system_prompt=SYSTEM_PROMPT, context=None, max_tokens=500):
@@ -23,12 +23,12 @@ Web search results:
 Answer the user's original query using the search results when relevant.
 """
 
-    max_retries = 3
+    max_retries = 2
 
     for attempt in range(max_retries):
         try:
             response = requests.post(
-                url="https://openrouter.ai/api/v1/chat/completions",
+                url= LLM_BASE_URL,
 
                 headers={
                     "Authorization": f"Bearer {LLM_API_KEY}",
@@ -36,7 +36,7 @@ Answer the user's original query using the search results when relevant.
                 },
 
                 data=json.dumps({
-                    "model": "openrouter/free",
+                    "model": LLM_MODEL,
                     "messages": [
                         {
                             "role": "system",
@@ -50,7 +50,7 @@ Answer the user's original query using the search results when relevant.
                     "max_tokens": max_tokens
                 }),
 
-                timeout=30
+                timeout=12
             )
 
         except requests.exceptions.Timeout:
