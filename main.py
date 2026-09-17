@@ -1,5 +1,6 @@
-from app.ai import call_ai, should_search, generate_search_query
-from app.web_search import search_web
+from ai import call_ai, should_search, generate_search_query
+from web_search import search_web
+from settings import open_settings
 
 from rich.console import Console
 from rich.markdown import Markdown
@@ -14,6 +15,7 @@ AVAILABLE_COMMANDS = {
     "/help": "Show available commands",
     "/clear": "Clear the terminal",
     "/exit": "Exit ONE",
+    "/settings": "Manage AI provider, model and API key",
 }
 
 
@@ -96,6 +98,9 @@ while True:
         elif command == "/exit":
             console.print("[dim]Goodbye.[/dim]")
             break
+
+        elif command == "/settings":
+            open_settings()
 
     else:
         response = get_response(user_input)

@@ -2,12 +2,18 @@ import requests
 import json
 import time
 
-from app.prompts import SYSTEM_PROMPT, SEARCH_DECISION_PROMPT, SEARCH_QUERY_PROMPT
-from app.config import LLM_API_KEY, LLM_MODEL, LLM_BASE_URL
+from prompts import SYSTEM_PROMPT, SEARCH_DECISION_PROMPT, SEARCH_QUERY_PROMPT
+from config import get_llm_config
 
+config = get_llm_config()
+
+llm_api_key = config["api_key"]
+llm_model = config["model"]
+llm_base_url = config["base_url"]
+llm_timeout = config["timeout"]
 
 def call_ai(query, system_prompt=SYSTEM_PROMPT, context=None, max_tokens=500):
-    if not LLM_API_KEY:
+    if not llm_api_key:
         return "API key is missing. Add your API key in settings."
 
     user_content = query
@@ -28,15 +34,15 @@ Answer the user's original query using the search results when relevant.
     for attempt in range(max_retries):
         try:
             response = requests.post(
-                url= LLM_BASE_URL,
+                url= llm_base_url,
 
                 headers={
-                    "Authorization": f"Bearer {LLM_API_KEY}",
+                    "Authorization": f"Bearer {llm_api_key}",
                     "Content-Type": "application/json"
                 },
 
                 data=json.dumps({
-                    "model": LLM_MODEL,
+                    "model": llm_model,
                     "messages": [
                         {
                             "role": "system",
@@ -50,7 +56,7 @@ Answer the user's original query using the search results when relevant.
                     "max_tokens": max_tokens
                 }),
 
-                timeout=12
+                timeout=llm_timeout
             )
 
         except requests.exceptions.Timeout:
