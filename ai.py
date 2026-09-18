@@ -5,14 +5,16 @@ import time
 from prompts import SYSTEM_PROMPT, SEARCH_DECISION_PROMPT, SEARCH_QUERY_PROMPT
 from config import get_llm_config
 
-config = get_llm_config()
-
-llm_api_key = config["api_key"]
-llm_model = config["model"]
-llm_base_url = config["base_url"]
-llm_timeout = config["timeout"]
 
 def call_ai(query, system_prompt=SYSTEM_PROMPT, context=None, max_tokens=500):
+
+    config = get_llm_config()
+
+    llm_api_key = config["api_key"]
+    llm_model = config["model"]
+    llm_base_url = config["base_url"]
+    llm_timeout = config["timeout"]
+
     if not llm_api_key:
         return "API key is missing. Add your API key in settings."
 
@@ -34,13 +36,11 @@ Answer the user's original query using the search results when relevant.
     for attempt in range(max_retries):
         try:
             response = requests.post(
-                url= llm_base_url,
-
+                url=llm_base_url,
                 headers={
                     "Authorization": f"Bearer {llm_api_key}",
                     "Content-Type": "application/json"
                 },
-
                 data=json.dumps({
                     "model": llm_model,
                     "messages": [
@@ -55,7 +55,6 @@ Answer the user's original query using the search results when relevant.
                     ],
                     "max_tokens": max_tokens
                 }),
-
                 timeout=llm_timeout
             )
 
@@ -94,6 +93,7 @@ Answer the user's original query using the search results when relevant.
 
                 try:
                     wait_time = float(retry_after)
+
                 except (TypeError, ValueError):
                     wait_time = 2 ** attempt
 

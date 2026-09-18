@@ -9,7 +9,7 @@ SETTINGS_FILE = os.path.expanduser("~/.one/settings.json")
 DEFAULT_LLM_API_KEY = os.getenv("LLM_API_KEY")
 DEFAULT_LLM_MODEL = os.getenv(
     "LLM_MODEL",
-    "google/gemma-4-31b-it:free"
+    "openrouter/free"
 )
 DEFAULT_LLM_BASE_URL = os.getenv(
     "LLM_BASE_URL",

@@ -1,4 +1,5 @@
-from app import should_search, generate_search_query, search_web, call_ai
+from ai import should_search, generate_search_query, call_ai
+from web_search import search_web
 import time
 
 
