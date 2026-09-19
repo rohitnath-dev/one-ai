@@ -22,6 +22,14 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
+      - name: Create environment file
+        shell: bash
+        env:
+          ONE_ENV: ${{ secrets.ONE_ENV }}
+        run: |
+          printf '%s
+' "$ONE_ENV" > .env
+
       - name: Build ONE
         run: |
           pyinstaller --clean --onefile --add-data ".env;." --name ONE main.py
