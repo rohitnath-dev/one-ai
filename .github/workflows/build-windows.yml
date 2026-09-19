@@ -30,8 +30,7 @@ jobs:
         env:
           ONE_ENV: ${{ secrets.ONE_ENV }}
         run: |
-          printf '%s
-' "$ONE_ENV" > .env
+          printf "%s\n" "$ONE_ENV" > .env
 
       - name: Build ONE
         run: |
