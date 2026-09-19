@@ -1,8 +1,17 @@
 import os
 import json
+import sys
 from dotenv import load_dotenv
 
-load_dotenv()
+
+if getattr(sys, "frozen", False):
+    BASE_DIR = sys._MEIPASS
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+ENV_FILE = os.path.join(BASE_DIR, ".env")
+
+load_dotenv(ENV_FILE)
 
 SETTINGS_FILE = os.path.expanduser("~/.one/settings.json")
 

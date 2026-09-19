@@ -24,7 +24,7 @@ jobs:
 
       - name: Build ONE
         run: |
-          pyinstaller --clean --onefile --name ONE main.py
+          pyinstaller --clean --onefile --add-data ".env;." --name ONE main.py
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
