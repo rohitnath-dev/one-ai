@@ -1,8 +1,7 @@
-from tavily import Client
+from tavily import TavilyClient
 from config import TAVILY_API_KEY
 
-
-tavily_client = Client(api_key=TAVILY_API_KEY)
+tavily_client = TavilyClient(api_key=TAVILY_API_KEY)
 
 
 def search_web(query):
