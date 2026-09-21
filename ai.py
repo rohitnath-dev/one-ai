@@ -155,22 +155,15 @@ Answer the user's original query using the search results when relevant.
 
 
 def should_search(query):
-    for attempt in range(2):
-        decision = call_ai(
-            query,
-            system_prompt=SEARCH_DECISION_PROMPT,
-            max_tokens=5
-        )
+    decision = call_ai(
+        query,
+        system_prompt=SEARCH_DECISION_PROMPT,
+        max_tokens=3
+    )
 
-        decision = decision.strip().upper()
+    decision = decision.strip().upper().rstrip(".")
 
-        if decision == "TRUE":
-            return True
-
-        if decision == "FALSE":
-            return False
-
-    return False
+    return decision == "TRUE"
 
 
 def generate_search_query(query):
