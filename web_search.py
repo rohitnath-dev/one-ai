@@ -1,7 +1,5 @@
-from tavily import TavilyClient
+import requests
 from config import TAVILY_API_KEY
-
-tavily_client = TavilyClient(api_key=TAVILY_API_KEY)
 
 
 def search_web(query):
@@ -9,12 +7,20 @@ def search_web(query):
         return None
 
     try:
-        response = tavily_client.search(
-            query=query,
-            max_results=5
+        response = requests.post(
+            "https://api.tavily.com/search",
+            json={
+                "api_key": TAVILY_API_KEY,
+                "query": query,
+                "max_results": 5,
+            },
+            timeout=10,
         )
 
-        results = response.get("results", [])
+        response.raise_for_status()
+
+        data = response.json()
+        results = data.get("results", [])
 
         if not results:
             return None
@@ -22,17 +28,13 @@ def search_web(query):
         formatted_results = []
 
         for result in results:
-            title = result.get("title", "")
-            content = result.get("content", "")
-            url = result.get("url", "")
-
             formatted_results.append(
-                f"Title: {title}\n"
-                f"Content: {content}\n"
-                f"URL: {url}"
+                f"Title: {result.get('title', '')}\n"
+                f"Content: {result.get('content', '')}\n"
+                f"URL: {result.get('url', '')}"
             )
 
         return "\n\n".join(formatted_results)
 
-    except Exception:
+    except requests.RequestException:
         return None

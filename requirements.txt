@@ -1,4 +1,3 @@
+requests
 python-dotenv
 rich
-requests
-tavily-python
