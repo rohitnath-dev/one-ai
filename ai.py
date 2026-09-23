@@ -52,7 +52,7 @@ def should_search(query):
     decision = call_ai(
         query,
         system_prompt=SEARCH_DECISION_PROMPT,
-        max_tokens=3
+        max_tokens=50
     )
 
     decision = decision.strip().upper().rstrip(".")
